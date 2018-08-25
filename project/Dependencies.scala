@@ -31,18 +31,18 @@ object Dependencies {
   lazy val mysqlConnectorVersion = "5.1.36"
   lazy val oozieClientVersion = "4.2.0"
 
-  lazy val HADOOP_VERSION = "hadoopversion"
-  lazy val SPARK_VERSION = "sparkversion"
+  // System properties
+  val HADOOP_VERSION = "hadoopversion"
+  val SPARK_VERSION = "sparkversion"
 
-  var hadoopVersion = "2.3.0"
-  if (System.getProperties.getProperty(HADOOP_VERSION) != null) {
-    hadoopVersion = System.getProperties.getProperty(HADOOP_VERSION)
-  }
+  val defaultHadoopVersion = "2.3.0"
+  val hadoopVersion = Option(System.getProperties.getProperty(HADOOP_VERSION)).getOrElse(defaultHadoopVersion)
+  println(s"HADOOP version: $hadoopVersion")
 
-  var sparkVersion = "1.4.0"
-  if (System.getProperties.getProperty(SPARK_VERSION) != null) {
-    sparkVersion = System.getProperties.getProperty(SPARK_VERSION)
-  }
+  val defaultSparkVersion = "1.4.0"
+  val sparkVersion = Option(System.getProperties.getProperty(SPARK_VERSION)).getOrElse(defaultSparkVersion)
+  println(s"SPARK version: $sparkVersion")
+
 
   val sparkExclusion = if (sparkVersion >= "1.5.0") {
     "org.apache.spark" % "spark-core_2.10" % sparkVersion excludeAll(
@@ -60,7 +60,7 @@ object Dependencies {
   }
 
   // Dependency coordinates
-  var requiredDep = Seq(
+  val requiredDep = Seq(
     "com.google.code.gson" % "gson" % gsonVersion,
     "com.google.guava" % "guava" % guavaVersion,
     "com.jsuereth" %% "scala-arm" % "1.4",
@@ -94,7 +94,6 @@ object Dependencies {
     "org.apache.httpcomponents" % "httpcore" % "4.4.4",
     "org.scalatest" %% "scalatest" % "3.0.0" % Test,
     "com.h2database" % "h2" % "1.4.196" % Test
-
   ) :+ sparkExclusion
 
   var dependencies = Seq(javaJdbc, javaEbean, cache)
