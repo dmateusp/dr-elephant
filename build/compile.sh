@@ -17,7 +17,7 @@
 #
 
 function print_usage(){
-  echo "usage: ./compile.sh PATH_TO_CONFIG_FILE(optional)"
+  echo "usage: ./compile.sh PATH_TO_CONFIG_FILE(optional, default: ./compile.conf)"
 }
 
 function play_command() {
@@ -48,45 +48,43 @@ function require_programs() {
 
 require_programs zip unzip
 
-# Default configurations
-HADOOP_VERSION="2.3.0"
-SPARK_VERSION="1.4.0"
-
 # User should pass an optional argument which is a path to config file
 if [ -z "$1" ];
 then
-  echo "Using the default configuration"
+  echo "Using default config file location"
+  CONF_FILE_PATH="compile.conf"
 else
   CONF_FILE_PATH=$1
   echo "Using config file: "$CONF_FILE_PATH
-
-  # User must give a valid file as argument
-  if [ -f $CONF_FILE_PATH ];
-  then
-    echo "Reading from config file..."
-  else
-    echo "error: Couldn't find a valid config file at: " $CONF_FILE_PATH
-    print_usage
-    exit 1
-  fi
-
-  source $CONF_FILE_PATH
-
-  # Fetch the Hadoop version
-  if [ -n "${hadoop_version}" ]; then
-    HADOOP_VERSION=${hadoop_version}
-  fi
-
-  # Fetch the Spark version
-  if [ -n "${spark_version}" ]; then
-    SPARK_VERSION=${spark_version}
-  fi
-
-  # Fetch other play opts
-  if [ -n "${play_opts}" ]; then
-    PLAY_OPTS=${play_opts}
-  fi
 fi
+
+# User must give a valid file as argument
+if [ -f $CONF_FILE_PATH ];
+then
+  echo "Reading from config file..."
+else
+  echo "error: Couldn't find a valid config file at: " $CONF_FILE_PATH
+  print_usage
+  exit 1
+fi
+
+source $CONF_FILE_PATH
+
+# Fetch the Hadoop version
+if [ -n "${hadoop_version}" ]; then
+  HADOOP_VERSION=${hadoop_version}
+fi
+
+# Fetch the Spark version
+if [ -n "${spark_version}" ]; then
+  SPARK_VERSION=${spark_version}
+fi
+
+# Fetch other play opts
+if [ -n "${play_opts}" ]; then
+  PLAY_OPTS=${play_opts}
+fi
+
 
 echo "Hadoop Version : $HADOOP_VERSION"
 echo "Spark Version  : $SPARK_VERSION"

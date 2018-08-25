@@ -17,24 +17,20 @@
 import play.Project._
 import Dependencies._
 
-name := "dr-elephant"
 
-version := "2.1.7"
-
-organization := "com.linkedin.drelephant"
-
-javacOptions in Compile ++= Seq("-source", "1.6", "-target", "1.6")
-
-libraryDependencies ++= dependencies map { _.excludeAll(exclusionRules: _*) }
-
-// Create a new custom configuration called compileonly
-ivyConfigurations += config("compileonly").hide
-
-// Append all dependencies with 'compileonly' configuration to unmanagedClasspath in Compile.
-unmanagedClasspath in Compile ++= update.value.select(configurationFilter("compileonly"))
+lazy val root = (project in file("."))
+  .settings(
+    name         := "dr-elephant",
+    organization := "com.linkedin.drelephant",
+    scalaVersion := "2.10.4",
+    version      := "2.1.7",
+    javacOptions in Compile ++= Seq("-source", "1.6", "-target", "1.6"),
+    libraryDependencies ++= dependencies map { _.excludeAll(exclusionRules: _*) },
+    // Create a new custom configuration called compileonly
+    ivyConfigurations += config("compileonly").hide,
+    // Append all dependencies with 'compileonly' configuration to unmanagedClasspath in Compile.
+    unmanagedClasspath in Compile ++= update.value.select(configurationFilter("compileonly")),
+    envVars in Test := Map("PSO_DIR_PATH" -> (baseDirectory.value / "scripts/pso").getAbsolutePath)
+  )
 
 playJavaSettings
-
-scalaVersion := "2.10.4"
-
-envVars in Test := Map("PSO_DIR_PATH" -> (baseDirectory.value / "scripts/pso").getAbsolutePath)
