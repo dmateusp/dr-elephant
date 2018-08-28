@@ -71,10 +71,13 @@ object Dependencies {
     "org.apache.hadoop" % "hadoop-auth" % hadoopVersion % "compileonly",
     "org.apache.hadoop" % "hadoop-mapreduce-client-core" % hadoopVersion % "compileonly",
     "org.apache.hadoop" % "hadoop-mapreduce-client-core" % hadoopVersion % Test,
+    "org.apache.hadoop" % "hadoop-mapreduce-client-core" % hadoopVersion % Runtime,
     "org.apache.hadoop" % "hadoop-common" % hadoopVersion % "compileonly",
     "org.apache.hadoop" % "hadoop-common" % hadoopVersion % Test,
+    "org.apache.hadoop" % "hadoop-common" % hadoopVersion % Runtime,
     "org.apache.hadoop" % "hadoop-hdfs" % hadoopVersion % "compileonly",
     "org.apache.hadoop" % "hadoop-hdfs" % hadoopVersion % Test,
+    "org.apache.hadoop" % "hadoop-hdfs" % hadoopVersion % Runtime,
     "org.jsoup" % "jsoup" % jsoupVersion,
     "org.apache.oozie" % "oozie-client" % oozieClientVersion excludeAll(
       ExclusionRule(organization = "org.apache.hadoop")
@@ -96,8 +99,7 @@ object Dependencies {
     "com.h2database" % "h2" % "1.4.196" % Test
   ) :+ sparkExclusion
 
-  var dependencies = Seq(javaJdbc, javaEbean, cache)
-  dependencies ++= requiredDep
+  val dependencies = Seq(javaJdbc, javaEbean, cache) ++ requiredDep
 
   val exclusionRules = Seq(
     ExclusionRule(organization = "com.sun.jersey", name = "jersey-core"),
