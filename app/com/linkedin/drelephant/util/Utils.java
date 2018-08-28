@@ -24,6 +24,8 @@ import com.linkedin.drelephant.configurations.scheduler.SchedulerConfigurationDa
 import com.linkedin.drelephant.math.Statistics;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -45,6 +47,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+import play.api.Play;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -55,6 +58,7 @@ import java.util.*;
  * This class contains all the utility methods.
  */
 public final class Utils {
+
   private static final Logger logger = Logger.getLogger(Utils.class);
 
   private static final String TRUNCATE_SUFFIX = "...";
@@ -82,10 +86,14 @@ public final class Utils {
   public static Document loadXMLDoc(String filePath) {
     InputStream instream = null;
     logger.info("Loading configuration file " + filePath);
-    instream = ClassLoader.getSystemClassLoader().getResourceAsStream(filePath);
+
+    ClassLoader cl = Play.current().classloader();
+    instream = cl.getResourceAsStream(filePath);
 
     if (instream == null) {
-      logger.info("Configuation file not present in classpath. File:  " + filePath);
+      URL[] urls = ((URLClassLoader)cl).getURLs();
+      logger.error(String.format("Configuation file not present in classpath. File: %s, looked into: %s", filePath, Arrays.toString(urls)));
+
       throw new RuntimeException("Unable to read " + filePath);
     }
     logger.info("Configuation file loaded. File: " + filePath);

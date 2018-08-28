@@ -30,7 +30,9 @@ lazy val root = (project in file("."))
     ivyConfigurations += config("compileonly").hide,
     // Append all dependencies with 'compileonly' configuration to unmanagedClasspath in Compile.
     unmanagedClasspath in Compile ++= update.value.select(configurationFilter("compileonly")),
+    unmanagedClasspath in Runtime += baseDirectory.value / "app-conf",
     envVars in Test := Map("PSO_DIR_PATH" -> (baseDirectory.value / "scripts/pso").getAbsolutePath)
   )
 
 playJavaSettings
+
